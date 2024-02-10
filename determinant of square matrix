@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to calculate the determinant of a square matrix
+int determinant(int **arr, int n) {
+    int i, j, k, l, j1, j2, temp = 0, sign = 1;
+    int **mat = (int **)malloc(n * sizeof(int *));
+
+    // Copy the original matrix to the new matrix
+    for (i = 0; i < n; i++) {
+        mat[i] = (int *)malloc(n * sizeof(int));
+        for (j = 0; j < n; j++) {
+            mat[i][j] = arr[i][j];
+        }
+    }
+
+    // Calculate the determinant of the matrix
+    for (i = 0; i < n; i++) {
+        for (j = i; j < n; j++) {
+            // Search for a non-zero element in the first row
+            if (mat[i][i] == 0) {
+                for (k = i + 1; k < n; k++) {
+                    // Swap the rows
+                    for (l = i; l < n; l++) {
+                        temp = mat[i][l];
+                        mat[i][l] = mat[k][l];
+                        mat[k][l] = temp;
+                    }
+
+                    // Change the sign of the determinant
+                    sign = -sign;
+                    break;
+                }
+
+                // If there is no non-zero element in the first row, the determinant is 0
+                if (k == n) {
+                    return 0;
+                }
+            }
+
+            // Calculate the cofactor of the first element in the first row
+            for (k = i + 1; k < n; k++) {
+                mat[k][j] = mat[k][j] - (mat[i][j] * mat[k][i] / mat[i][i]);
+            }
+        }
+    }
+
+    // Calculate the determinant
+    for (i = 0; i < n; i++) {
+        temp += arr[i][i];
+    }
+
+    // Return the determinant
+    return sign * temp;
+}
+
+int main() {
+    int n, i, j;
+    int **arr;
+
+    // Display the purpose of the program
+    printf("\n\nCalculate the determinant of a square matrix :\n");
+    printf("----------------------------------------------\n");
+
+    // Input the size of the matrix
+    printf("Enter the size of the square matrix: ");
+    scanf("%d", &n);
+
+    // Allocate memory for the matrix
+    arr = (int **)malloc(n * sizeof(int *));
+    for (i = 0; i < n; i++) {
+        arr[i] = (int *)malloc(n * sizeof(int));
+    }
+
+    // Input elements into the matrix
+    printf("Input elements in the matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            printf("element - [%d],[%d] : ", i, j);
+            scanf("%d", &arr[i][j]);
+        }
+    }
+
+    // Calculate the determinant of the matrix
+    int det = determinant(arr, n);
+
+    // Display the determinant of the matrix
+    printf("\nThe Determinant of the matrix is: %d\n\n", det);
+
+    return 0;
+}
